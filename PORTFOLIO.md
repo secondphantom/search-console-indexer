@@ -7,7 +7,7 @@
 - [ ] 00: docs
 - [ ] 01: login service
   - [ ] login
-    - [ ] service layer
+    - [X] service layer
     - [ ] user repo
     - [ ] success
       - [ ] create auth client

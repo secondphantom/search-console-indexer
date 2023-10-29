@@ -8,7 +8,7 @@ import { UserDomain } from "../domain/user.domain";
 type LoginServiceConstructorInput = {
   indexApiClient: IndexApiClient;
   userRepo: UserRepo;
-  options: {
+  options?: {
     port?: number;
   };
 };
@@ -41,58 +41,59 @@ export class LoginService {
     const user = new UserDomain(this.userRepo.getUser());
 
     if (user.auth) {
-      console.log(`Success Login with email: ${user.email}`);
+      console.info(`Success Login with email: ${user.email}`);
       await this.indexApiClient.init(user.auth);
       return;
     }
 
-    try {
-      await this.updateUserAuth();
-    } catch (error) {}
+    await this.updateUserAuth();
+
     return await this.login();
   };
 
   private updateUserAuth = async () => {
     await this.openHttpServer();
-
     const authUrl = this.indexApiClient.getAuthUrl();
-    console.log(`Go to auth Url and Approve auth: ${authUrl}`);
+    console.info(`Go to auth Url and Approve auth: ${authUrl}`);
 
-    await this.rl.question(`Are you redirected?(Enter)\n`);
+    await this.rl.question(`Did you approve OAuth?(Enter)\n`);
 
     this.closeHttpServer();
-
-    if (!this.code) throw new Error("Cannot Get a code");
-
+    if (!this.code) return;
     const token = await this.indexApiClient.getAuthToken(this.code);
     const user = new UserDomain(this.userRepo.getUser());
     user.updateUserAuth(token);
+    console.log(user);
     this.userRepo.updateUser(user.getUser());
 
-    console.log(`Updated User AuthData`);
+    console.info(`Updated User AuthData`);
   };
 
   private openHttpServer = async () => {
     if (this.httpServer) return;
-    this.httpServer = http
-      .createServer(async (req, res) => {
-        try {
-          if (req.url!.indexOf("/oauth2callback") > -1) {
-            const qs = new URL(
-              req.url!,
-              `http://localhost:${this.options.port}`
-            ).searchParams;
-            this.code = qs.get("code")!;
-            console.log(`Code is ${this.code}`);
-            return res.end(
-              "Authentication successful! Please return to the console."
-            );
-          }
-        } catch (e) {}
+    return new Promise((resolve, reject) => {
+      this.httpServer = http
+        .createServer(async (req, res) => {
+          try {
+            if (req.url!.indexOf("/oauth2callback") > -1) {
+              const qs = new URL(
+                req.url!,
+                `http://localhost:${this.options.port}`
+              ).searchParams;
+              this.code = qs.get("code")!;
 
-        return res.end("Authentication Fail");
-      })
-      .listen(this.options.port, () => {});
+              return res.end(
+                "Authentication successful! Please return to the console."
+              );
+            }
+          } catch (e) {}
+
+          return res.end("Authentication Fail");
+        })
+        .listen(this.options.port, () => {
+          resolve(null);
+        });
+    });
   };
 
   private closeHttpServer = () => {

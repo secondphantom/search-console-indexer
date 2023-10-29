@@ -1,4 +1,4 @@
-import { User, User } from "../domain/user.domain";
+import { User, UserDomain } from "../domain/user.domain";
 
 export type UserRepo = {
   createUser: () => void;
