@@ -17,7 +17,7 @@ npm install https://github.com/secondphantom/search-console-indexer
 		clientSecretFilePath: "./client_secret.json",
 		userDataDirPath: "./",
 		options: {
-			saveAuth: true,
+			saveUser: true,
 			saveData: true,
 		}
 	});
@@ -38,9 +38,9 @@ type SearchConsoleIndexerConstructorInput = {
 	userDataDirPath: string;
 	options?: {
 		//default true
-		saveAuth?: boolean;
+		saveUser?: boolean;
 		//default true
-		saveResult?: boolean;
+		saveData?: boolean;
 		//default 3005
 		port?: boolean;
 	}
