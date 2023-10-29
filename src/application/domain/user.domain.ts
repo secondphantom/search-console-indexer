@@ -8,23 +8,23 @@ export type Url = {
 };
 
 export type Host = {
-  email: string;
+  userId: string;
   urls: Url[];
 };
 
 export type User = {
   auth: any;
-  email: string;
+  userId: string;
   hosts: string[];
 };
 
 export class UserDomain {
   auth: any;
-  email: string;
+  userId: string;
   hosts: string[];
-  constructor({ auth, email, hosts }: User) {
+  constructor({ auth, userId, hosts }: User) {
     this.auth = auth;
-    this.email = email;
+    this.userId = userId;
     this.hosts = hosts;
   }
 
@@ -39,7 +39,7 @@ export class UserDomain {
   getUser = () => {
     return {
       auth: this.auth,
-      email: this.email,
+      userId: this.userId,
       hosts: this.hosts,
     };
   };

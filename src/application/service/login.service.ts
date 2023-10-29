@@ -1,13 +1,13 @@
 import http, { Server } from "http";
-import { UserRepo } from "../interfaces/user.repo.interface";
+import { IUserRepo } from "../interfaces/user.repo.interface";
 import * as readline from "readline/promises";
 import { stdin, stdout } from "process";
-import { IndexApiClient } from "../interfaces/index.api.client";
+import { IIndexApiClient } from "../interfaces/index.api.client.interface";
 import { UserDomain } from "../domain/user.domain";
 
 type LoginServiceConstructorInput = {
-  indexApiClient: IndexApiClient;
-  userRepo: UserRepo;
+  indexApiClient: IIndexApiClient;
+  userRepo: IUserRepo;
   options?: {
     port?: number;
   };
@@ -19,8 +19,8 @@ export class LoginService {
   private options = {
     port: 3000,
   };
-  private userRepo: UserRepo;
-  private indexApiClient: IndexApiClient;
+  private userRepo: IUserRepo;
+  private indexApiClient: IIndexApiClient;
   private code: string | undefined;
 
   constructor({
@@ -41,7 +41,7 @@ export class LoginService {
     const user = new UserDomain(this.userRepo.getUser());
 
     if (user.auth) {
-      console.info(`Success Login with email: ${user.email}`);
+      console.info(`Success Login with email: ${user.userId}`);
       await this.indexApiClient.init(user.auth);
       return;
     }
