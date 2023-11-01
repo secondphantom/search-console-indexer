@@ -42,7 +42,9 @@ export class LoginService {
 
     if (user.auth) {
       console.info(`Success Login with email: ${user.userId}`);
-      await this.indexApiClient.init(user.auth);
+      const hosts = await this.indexApiClient.init(user.auth);
+      user.updateUserHosts(hosts);
+      this.userRepo.updateUser(user.getUser());
       return;
     }
 

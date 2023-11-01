@@ -36,6 +36,10 @@ export class UserDomain {
     this.auth = auth;
   };
 
+  updateUserHosts = (hosts: string[]) => {
+    this.hosts = hosts;
+  };
+
   getUser = () => {
     return {
       auth: this.auth,
