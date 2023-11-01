@@ -1,23 +1,28 @@
 # Google Search Console Indexer
 
 ## Event Storming
+
 ## Todo
-- [ ] 00: docs
-- [ ] 01: login
-  - [ ] service
-    - [ ] login
-      - [ ] user repo
-      - [ ] success
-        - [ ] create auth client
-      - [ ] fail
-        - [ ] create auth url
-          - [ ] http server
-          - [ ] google api client
-        - [ ] create user
-- [ ] 02: index
+
+- [X] 00: docs
+- [X] 01: login service
+  - [X] login
+    - [X] service layer
+        - [X] http server
+    - [X] user repo
+    - [X] index api client
+      - [X] success
+        - [X] getSiteList
+        - [X] create auth client
+      - [X] fail
+        - [X] get auth url
+- [ ] 02: index service
+  - [ ] index service layer
   - [ ] url
     - [ ] host repo
-    - [ ] success / fail
+    - [X] index api client
+      - [X] inspect url
+      - [X] indexing url
   - [ ] bulk url
     - [ ] queue
     - [ ] concurrency

@@ -2,7 +2,7 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  testMatch: ["<rootDir>/src/test/**/module.test.ts"],
+  testMatch: ["<rootDir>/src/test/**/google.index.api.client.test.ts"],
   verbose: true,
   forceExit: true,
   clearMocks: true,

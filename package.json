@@ -1,6 +1,6 @@
 {
   "name": "search-console-indexer",
-  "version": "0.1.0",
+  "version": "0.0.5",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "keywords": [],
   "author": "Second Phantom <second2phantom@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
   },
@@ -22,7 +22,8 @@
     "ts-jest": "^29.1.1"
   },
   "dependencies": {
-    "playwright": "^1.39.0",
+    "google-auth-library": "^9.2.0",
+    "googleapis": "^128.0.0",
     "zod": "^3.22.4",
     "zod-validation-error": "^1.5.0"
   }

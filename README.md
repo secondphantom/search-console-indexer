@@ -13,16 +13,16 @@ npm install https://github.com/secondphantom/search-console-indexer
 ## Basic usage
 ```ts
 	const indexer = new SearchConsoleIndexer({
-		email:"example@gmail.com",
+		userId:"userId",
 		clientSecretFilePath: "./client_secret.json",
-		userDataDirPath: "./",
+		dataDirPath: "./",
 		options: {
-			saveAuth: true,
+			saveUser: true,
 			saveData: true,
 		}
 	});
 
-	const {authClient} = await indexer.login();
+	await indexer.login();
 
 	const response = await indexer.url({
 		url: "https://example.com/example-docs"
@@ -33,14 +33,14 @@ npm install https://github.com/secondphantom/search-console-indexer
 ### Class
 ```ts
 type SearchConsoleIndexerConstructorInput = {
-	email: string;
+	userId: string;
 	clientSecretFilePath: string;
-	userDataDirPath: string;
+	dataDirPath: string;
 	options?: {
 		//default true
-		saveAuth?: boolean;
+		saveUser?: boolean;
 		//default true
-		saveResult?: boolean;
+		saveData?: boolean;
 		//default 3005
 		port?: boolean;
 	}
