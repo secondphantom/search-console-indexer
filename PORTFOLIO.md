@@ -8,7 +8,7 @@
 - [ ] 01: login service
   - [ ] login
     - [X] service layer
-    - [ ] user repo
+    - [X] user repo
     - [ ] success
       - [ ] create auth client
     - [ ] fail
