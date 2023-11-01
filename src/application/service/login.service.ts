@@ -42,8 +42,9 @@ export class LoginService {
 
     if (user.auth) {
       console.info(`Success Login with email: ${user.userId}`);
-      const hosts = await this.indexApiClient.init(user.auth);
-      user.updateUserHosts(hosts);
+      await this.indexApiClient.init(user.auth);
+      const siteList = await this.indexApiClient.getSiteList();
+      user.updateUserHosts(siteList);
       this.userRepo.updateUser(user.getUser());
       return;
     }
@@ -61,7 +62,9 @@ export class LoginService {
     await this.rl.question(`Did you approve OAuth?(Enter)\n`);
 
     this.closeHttpServer();
-    if (!this.code) return;
+
+    if (!this.code) throw new Error("Code is not existed");
+
     const token = await this.indexApiClient.getAuthToken(this.code);
     const user = new UserDomain(this.userRepo.getUser());
     user.updateUserAuth(token);

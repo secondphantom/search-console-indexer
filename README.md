@@ -22,7 +22,7 @@ npm install https://github.com/secondphantom/search-console-indexer
 		}
 	});
 
-	const {authClient} = await indexer.login();
+	await indexer.login();
 
 	const response = await indexer.url({
 		url: "https://example.com/example-docs"

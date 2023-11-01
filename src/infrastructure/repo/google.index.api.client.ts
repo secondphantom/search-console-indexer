@@ -18,9 +18,11 @@ export class GoogleIndexApiClient implements IIndexApiClient {
   private GOOGLE_API_SCOPE = [
     "https://www.googleapis.com/auth/webmasters",
     "https://www.googleapis.com/auth/webmasters.readonly",
+    "https://www.googleapis.com/auth/indexing",
   ];
   private oAuth2Client: OAuth2Client;
   private searchConsole = google.searchconsole("v1");
+  private indexing = google.indexing("v3");
 
   constructor({ clientSecretFilePath }: { clientSecretFilePath: string }) {
     const clientSecret = this.getClientSecret(clientSecretFilePath)!;
@@ -32,8 +34,8 @@ export class GoogleIndexApiClient implements IIndexApiClient {
   }
 
   private getClientSecret = (clientSecretFilePath: string) => {
-    if (fs.existsSync(clientSecretFilePath)) {
-      throw new Error("Client secret is not existed");
+    if (!fs.existsSync(clientSecretFilePath)) {
+      throw new Error("Client secret file is not existed");
     }
     const clientSecret = JSON.parse(
       fs.readFileSync(clientSecretFilePath, { encoding: "utf-8" })
@@ -43,7 +45,6 @@ export class GoogleIndexApiClient implements IIndexApiClient {
 
   init = async (auth: any) => {
     this.oAuth2Client.setCredentials(auth);
-    return await this.getSiteList();
   };
 
   getAuthUrl = () => {
@@ -59,8 +60,10 @@ export class GoogleIndexApiClient implements IIndexApiClient {
     return tokenResponse.tokens;
   };
 
-  private getSiteList = async () => {
-    const resSiteList = (await this.searchConsole.sites.list({})).data;
+  getSiteList = async () => {
+    const resSiteList = (
+      await this.searchConsole.sites.list({ auth: this.oAuth2Client })
+    ).data;
 
     if (!resSiteList.siteEntry) return [];
 
@@ -74,22 +77,34 @@ export class GoogleIndexApiClient implements IIndexApiClient {
   };
 
   indexingUrl = async ({ url }: { url: string }) => {
-    await this.searchConsole.sitemaps.submit({
-      siteUrl: url,
+    const resIndexingUrl = await this.indexing.urlNotifications.publish({
+      auth: this.oAuth2Client,
+      requestBody: {
+        url,
+        type: "URL_UPDATED",
+      },
     });
+    return resIndexingUrl.data.urlNotificationMetadata;
   };
 
   inspectUrl = async ({ url }: { url: string }) => {
     const resInspectURL = await this.searchConsole.urlInspection.index.inspect({
       requestBody: {
         inspectionUrl: url,
-        siteUrl: new URL(url).origin,
+        siteUrl: new URL(url).origin + "/",
       },
+      auth: this.oAuth2Client,
     });
 
     return resInspectURL.data.inspectionResult?.indexStatusResult?.verdict ===
       "PASS"
-      ? true
-      : false;
+      ? {
+          url,
+          isIndexing: true,
+        }
+      : {
+          url,
+          isIndexing: false,
+        };
   };
 }

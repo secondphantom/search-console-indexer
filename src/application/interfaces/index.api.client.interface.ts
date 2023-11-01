@@ -1,7 +1,12 @@
 export type IIndexApiClient = {
-  init: (auth: any) => Promise<string[]>;
+  init: (auth: any) => Promise<void>;
   getAuthUrl: () => string;
   getAuthToken: (code: string) => Promise<any>;
-  indexingUrl: ({ url }: { url: string }) => Promise<void>;
-  inspectUrl: ({ url }: { url: string }) => Promise<boolean>;
+  getSiteList: () => Promise<string[]>;
+  indexingUrl: ({ url }: { url: string }) => Promise<any>;
+  inspectUrl: ({
+    url,
+  }: {
+    url: string;
+  }) => Promise<{ url: string; isIndexing: boolean }>;
 };
