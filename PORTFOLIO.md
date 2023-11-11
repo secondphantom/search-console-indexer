@@ -1,7 +1,8 @@
 # Google Search Console Indexer
 
 ## Event Storming
-
+![1699690208086](image/PORTFOLIO/1699690208086.png)
+![1699690223541](image/PORTFOLIO/1699690223541.png)
 ## Todo
 
 - [X] 00: docs

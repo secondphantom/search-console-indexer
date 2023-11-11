@@ -68,7 +68,6 @@ export class LoginService {
     const token = await this.indexApiClient.getAuthToken(this.code);
     const user = new UserDomain(this.userRepo.getUser());
     user.updateUserAuth(token);
-    console.log(user);
     this.userRepo.updateUser(user.getUser());
 
     console.info(`Updated User AuthData`);
