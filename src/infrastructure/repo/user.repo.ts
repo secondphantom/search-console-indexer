@@ -50,6 +50,8 @@ export class UserRepo implements IUserRepo {
 
   private saveUser = () => {
     if (!this.options.saveUser) return;
-    fs.promises.writeFile(this.userDataFilePath, JSON.stringify(this.user));
+    fs.promises
+      .writeFile(this.userDataFilePath, JSON.stringify(this.user))
+      .catch();
   };
 }

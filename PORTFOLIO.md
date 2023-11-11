@@ -18,15 +18,13 @@
       - [X] fail
         - [X] get auth url
 - [ ] 02: index service
-  - [ ] index service layer
-  - [ ] url
-    - [ ] host repo
+  - [X] index service layer
+  - [ ] single url
+    - [ ] origins repo
     - [X] index api client
       - [X] inspect url
       - [X] indexing url
-  - [ ] bulk url
-    - [ ] queue
-    - [ ] concurrency
-  - [ ] sitemap url
+  - [X] bulk url
+  - [X] sitemap url
 - [ ] 03: controller
 - [ ] 04: input validator

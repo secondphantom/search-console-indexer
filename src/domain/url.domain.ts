@@ -1,3 +1,8 @@
+export type Data = {
+  userId: string;
+  origins: Map<string, Map<string, UrlInfo>>;
+};
+
 export type UrlInfo = {
   url: string;
   requestedDate: string;

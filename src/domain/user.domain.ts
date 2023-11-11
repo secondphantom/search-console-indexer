@@ -1,17 +1,3 @@
-export type Url = {
-  requestDate: string;
-  isIndexing: boolean;
-  request: {
-    success: string;
-    message: string;
-  };
-};
-
-export type Host = {
-  userId: string;
-  urls: Url[];
-};
-
 export type User = {
   auth: any;
   userId: string;
