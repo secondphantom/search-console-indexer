@@ -15,36 +15,44 @@ export type Host = {
 export type User = {
   auth: any;
   userId: string;
-  hosts: string[];
+  origins: string[];
 };
 
 export class UserDomain {
-  auth: any;
-  userId: string;
-  hosts: string[];
-  constructor({ auth, userId, hosts }: User) {
+  private auth: any;
+  private userId: string;
+  private origins: string[];
+  constructor({ auth, userId, origins }: User) {
     this.auth = auth;
     this.userId = userId;
-    this.hosts = hosts;
+    this.origins = origins;
   }
 
   static createUser(user: User) {
     return new UserDomain(user);
   }
 
+  getUserAuth = () => {
+    return this.auth;
+  };
+
+  getUserId = () => {
+    return this.userId;
+  };
+
   updateUserAuth = (auth: any) => {
     this.auth = auth;
   };
 
-  updateUserHosts = (hosts: string[]) => {
-    this.hosts = hosts;
+  updateUserOrigins = (origins: string[]) => {
+    this.origins = origins;
   };
 
   getUser = () => {
     return {
       auth: this.auth,
       userId: this.userId,
-      hosts: this.hosts,
+      origins: this.origins,
     };
   };
 }

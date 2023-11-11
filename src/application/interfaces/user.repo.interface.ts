@@ -1,4 +1,4 @@
-import { User, UserDomain } from "../domain/user.domain";
+import { User, UserDomain } from "../../domain/user.domain";
 
 export type UserRepoConstructorInput = {
   userId: string;
@@ -11,4 +11,5 @@ export type UserRepoConstructorInput = {
 export type IUserRepo = {
   getUser: () => User;
   updateUser: (user: User) => void;
+  findOrigin: (origin: string) => boolean;
 };

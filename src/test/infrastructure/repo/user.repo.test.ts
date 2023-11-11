@@ -24,7 +24,7 @@ describe("User Repo", () => {
   test("hosts", () => {
     const updateUser = {
       userId: process.env.USER_ID!,
-      hosts: ["https://example.com", "https://www.example.com"],
+      origins: ["https://example.com", "https://www.example.com"],
       auth: "auth",
     };
 

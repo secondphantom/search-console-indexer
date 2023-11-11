@@ -17,7 +17,7 @@ describe("Login Service", () => {
     userRepo.getUser = jest.fn(() => ({
       userId: "example",
       auth: "auth file",
-      hosts: ["https://example.com"],
+      origins: ["https://example.com"],
     }));
     indexApiClient.init = jest.fn();
 
@@ -36,13 +36,13 @@ describe("Login Service", () => {
         return {
           userId: "example@gmail.com",
           auth: undefined,
-          hosts: ["https://example.com"],
+          origins: ["https://example.com"],
         };
       }
       return {
         userId: "example@gmail.com",
         auth: "authCode",
-        hosts: ["https://example.com"],
+        origins: ["https://example.com"],
       };
     });
     userRepo.updateUser = jest.fn();
