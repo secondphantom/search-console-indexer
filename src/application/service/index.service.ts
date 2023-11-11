@@ -9,10 +9,7 @@ import { ServiceError, errorResolver } from "../../domain/error";
 import { UrlDomain, UrlInfo } from "../../domain/url.domain";
 import { IIndexApiClient } from "../interfaces/index.api.client.interface";
 import { IUserRepo } from "../interfaces/user.repo.interface";
-
-type IOriginsRepo = {
-  updateUrl: (url: UrlInfo) => void;
-};
+import { IOriginsRepo } from "../interfaces/origins.repo.interface";
 
 type IndexServiceConstructorInput = {
   indexApiClient: IIndexApiClient;
@@ -51,9 +48,9 @@ export class IndexService {
     });
 
     try {
-      this.checkInvalidUrl(urlDomain);
-      await this.inspectUrl(urlDomain, ignoreIsIndexingOrNot);
-      await this.indexingUrl(urlDomain);
+      this.checkInvalidOrigin(urlDomain);
+      await this.inspectUrl(urlDomain);
+      await this.indexingUrl(urlDomain, ignoreIsIndexingOrNot);
     } catch (error) {
       const { message } = errorResolver(error, {
         code: 500,
@@ -70,20 +67,16 @@ export class IndexService {
     return urlDomain.get();
   };
 
-  private checkInvalidUrl = (urlDomain: UrlDomain) => {
+  private checkInvalidOrigin = (urlDomain: UrlDomain) => {
     const origin = new URL(urlDomain.get().url).origin;
     if (this.userRepo.findOrigin(origin)) return;
     throw new ServiceError({
       code: 400,
-      message: `"${urlDomain.get().url}" is not in siteUrls`,
+      message: `"${urlDomain.get().url}" is not in origins`,
     });
   };
 
-  private inspectUrl = async (
-    urlDomain: UrlDomain,
-    ignoreIsIndexingOrNot: boolean
-  ) => {
-    if (ignoreIsIndexingOrNot) return;
+  private inspectUrl = async (urlDomain: UrlDomain) => {
     try {
       const { isIndexing } = await this.indexApiClient.inspectUrl({
         url: urlDomain.get().url,
@@ -104,8 +97,19 @@ export class IndexService {
     }
   };
 
-  private indexingUrl = async (urlDomain: UrlDomain) => {
+  private indexingUrl = async (
+    urlDomain: UrlDomain,
+    ignoreIsIndexingOrNot: boolean
+  ) => {
     try {
+      if (!ignoreIsIndexingOrNot && urlDomain.get().isIndexing) {
+        urlDomain.updateRequest({
+          success: true,
+          message: "Is Already Indexing",
+        });
+        return;
+      }
+
       await this.indexApiClient.indexingUrl({ url: urlDomain.get().url });
       urlDomain.updateRequest({
         success: true,
@@ -121,9 +125,11 @@ export class IndexService {
   };
 
   bulkUrl = async (indexBulkUrlRequest: IndexBulkUrlRequest) => {
-    const promises = indexBulkUrlRequest.map((request) => this.singleUrl);
+    const promises = indexBulkUrlRequest.map((request) =>
+      this.singleUrl(request)
+    );
 
-    const result = await Promise.allSettled(promises);
+    const result = await Promise.all(promises);
 
     return result;
   };

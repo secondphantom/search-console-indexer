@@ -17,7 +17,7 @@ export type IndexBulkUrlRequest = IndexSingeUrlRequest[];
 export type IndexBulkRulResponse = IndexSingeUrlResponse[];
 
 export type IndexSiteMapRequest = {
-  siteMapUrl?: string;
+  siteMapUrl: string;
   ignoreIsIndexingOrNot?: boolean;
 };
 export type IndexSiteMapResponse = IndexSingeUrlResponse[];
