@@ -21,13 +21,13 @@ export class OriginsRepo implements IOriginsRepo {
   };
 
   constructor({ userId, dataDirPath, options }: OriginsRepoConstructorInput) {
-    this.loadData();
     this.data.userId = userId;
     this.dataFilePath = `${dataDirPath}/${userId}-data.json`;
     this.options = {
       ...this.options,
       ...options,
     };
+    this.loadData();
     this.syncSaveData();
   }
 

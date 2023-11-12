@@ -17,22 +17,25 @@ export class UserRepo implements IUserRepo {
   };
 
   constructor({ userId, dataDirPath, options }: UserRepoConstructorInput) {
-    this.loadUser();
     this.user.userId = userId;
     this.userDataFilePath = `${dataDirPath}/${userId}-user.json`;
     this.options = {
       ...this.options,
       ...options,
     };
+    this.loadUser();
     this.syncSaveUser();
   }
 
   private loadUser = () => {
     if (!fs.existsSync(this.userDataFilePath)) return;
     if (!this.options.saveUser) return;
-    this.user = JSON.parse(
-      fs.readFileSync(this.userDataFilePath, { encoding: "utf-8" })
-    );
+    this.user = {
+      ...this.user,
+      ...JSON.parse(
+        fs.readFileSync(this.userDataFilePath, { encoding: "utf-8" })
+      ),
+    };
   };
 
   getUser = () => {

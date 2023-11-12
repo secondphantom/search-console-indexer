@@ -26,5 +26,5 @@
   - [X] bulk url
   - [X] sitemap url
 - [X] 03: controller, input validator
-- [ ] 04: index module
-  - [ ] module test
+- [X] 04: index module
+  - [X] module test

@@ -6,11 +6,16 @@ describe("Login Service", () => {
   let loginService: LoginService;
   let userRepo = {} as IUserRepo;
   let indexApiClient = {} as IIndexApiClient;
-  beforeAll(async () => {
+  beforeEach(async () => {
     loginService = new LoginService({
       userRepo,
       indexApiClient,
     });
+  });
+
+  afterEach(() => {
+    userRepo = {} as IUserRepo;
+    indexApiClient = {} as IIndexApiClient;
   });
 
   test("Success Login", async () => {
@@ -20,11 +25,19 @@ describe("Login Service", () => {
       origins: ["https://example.com"],
     }));
     indexApiClient.init = jest.fn();
+    indexApiClient.getSiteList = jest.fn(async () => {
+      return [];
+    });
+    userRepo.updateUser = jest.fn();
+    userRepo.asyncSaveUser = jest.fn();
 
     const result = await loginService.login();
 
     expect(userRepo.getUser).toBeCalledTimes(1);
     expect(indexApiClient.init).toBeCalledTimes(1);
+    expect(indexApiClient.getSiteList).toBeCalledTimes(1);
+    expect(userRepo.updateUser).toBeCalledTimes(1);
+    expect(userRepo.asyncSaveUser).toBeCalledTimes(1);
     expect(result).toEqual(undefined);
   });
 
@@ -47,15 +60,20 @@ describe("Login Service", () => {
     });
     userRepo.updateUser = jest.fn();
     indexApiClient.init = jest.fn();
+    indexApiClient.getSiteList = jest.fn(async () => {
+      return [];
+    });
     indexApiClient.getAuthUrl = jest.fn(() => "authUrl");
     indexApiClient.getAuthToken = jest.fn(async () => "authToken");
     loginService["code"] = "authCode";
+    userRepo.asyncSaveUser = jest.fn();
 
-    const result = await loginService.login();
+    await loginService.login();
     expect(indexApiClient.getAuthUrl).toBeCalledTimes(1);
     expect(indexApiClient.getAuthToken).toBeCalledTimes(1);
+    expect(indexApiClient.getSiteList).toBeCalledTimes(1);
     expect(userRepo.getUser).toBeCalledTimes(3);
-    expect(userRepo.updateUser).toBeCalledTimes(1);
-    expect(result).toEqual(undefined);
+    expect(userRepo.updateUser).toBeCalledTimes(2);
+    expect(userRepo.asyncSaveUser).toBeCalledTimes(2);
   }, 120000);
 });

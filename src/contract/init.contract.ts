@@ -1,4 +1,4 @@
-type SearchConsoleIndexerConstructorInput = {
+export type SearchConsoleIndexerConstructorInput = {
   userId: string;
   clientSecretFilePath: string;
   dataDirPath: string;
