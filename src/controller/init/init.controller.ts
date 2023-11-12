@@ -14,7 +14,7 @@ export class InitController {
   getInstance = (constructorInput: SearchConsoleIndexerConstructorInput) => {
     try {
       const { clientSecretFilePath, dataDirPath, userId, options } =
-        this.initValidator.validateConstructor(constructorInput);
+        this.initValidator.constructorInput(constructorInput);
 
       const userRepo = new UserRepo({
         userId,
