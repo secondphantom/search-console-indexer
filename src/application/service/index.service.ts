@@ -1,12 +1,10 @@
-import fs from "fs";
-
 import {
   IndexBulkUrlRequest,
   IndexSingeUrlRequest,
-  IndexSiteMapRequest,
+  IndexSitemapRequest,
 } from "../../contract/index.contract";
 import { ServiceError, errorResolver } from "../../domain/error";
-import { UrlDomain, UrlInfo } from "../../domain/url.domain";
+import { UrlDomain } from "../../domain/url.domain";
 import { IIndexApiClient } from "../interfaces/index.api.client.interface";
 import { IUserRepo } from "../interfaces/user.repo.interface";
 import { IOriginsRepo } from "../interfaces/origins.repo.interface";
@@ -15,27 +13,42 @@ type IndexServiceConstructorInput = {
   indexApiClient: IIndexApiClient;
   userRepo: IUserRepo;
   originsRepo: IOriginsRepo;
+  options?: {
+    saveData?: boolean;
+  };
 };
 
 export class IndexService {
   private indexApiClient: IIndexApiClient;
   private userRepo: IUserRepo;
   private originsRepo: IOriginsRepo;
+  private options = {
+    saveData: true,
+  };
 
   constructor({
     indexApiClient,
     userRepo,
     originsRepo,
+    options,
   }: IndexServiceConstructorInput) {
+    this.options = {
+      ...this.options,
+      ...options,
+    };
     this.indexApiClient = indexApiClient;
     this.userRepo = userRepo;
     this.originsRepo = originsRepo;
   }
 
-  singleUrl = async (
-    indexSingeUrlRequest: IndexSingeUrlRequest,
-    saveData: boolean = true
-  ) => {
+  singleUrl = async ({
+    indexSingeUrlRequest,
+    saveData,
+  }: {
+    indexSingeUrlRequest: IndexSingeUrlRequest;
+    saveData?: boolean;
+  }) => {
+    saveData = saveData === undefined ? true : saveData;
     const ignoreIsIndexingOrNot = indexSingeUrlRequest.ignoreIsIndexingOrNot
       ? indexSingeUrlRequest.ignoreIsIndexingOrNot
       : false;
@@ -66,7 +79,7 @@ export class IndexService {
     }
 
     this.originsRepo.updateUrl(urlDomain.get());
-    if (saveData) {
+    if (saveData && this.options.saveData) {
       await this.originsRepo.asyncSaveData();
     }
 
@@ -132,21 +145,23 @@ export class IndexService {
 
   bulkUrl = async (indexBulkUrlRequest: IndexBulkUrlRequest) => {
     const promises = indexBulkUrlRequest.map((request) =>
-      this.singleUrl(request, false)
+      this.singleUrl({ indexSingeUrlRequest: request, saveData: false })
     );
 
     const result = await Promise.all(promises);
-    await this.originsRepo.asyncSaveData();
+    if (this.options.saveData) {
+      await this.originsRepo.asyncSaveData();
+    }
 
     return result;
   };
 
-  sitemap = async (indexSiteMapRequest: IndexSiteMapRequest) => {
+  sitemap = async (indexSiteMapRequest: IndexSitemapRequest) => {
     const ignoreIsIndexingOrNot = indexSiteMapRequest.ignoreIsIndexingOrNot
       ? indexSiteMapRequest.ignoreIsIndexingOrNot
       : false;
     const sitemapUrlList = await this.getSitemapUrl(
-      indexSiteMapRequest.siteMapUrl
+      indexSiteMapRequest.sitemapUrl
     );
 
     const bulkUrlRequest: IndexBulkUrlRequest = sitemapUrlList.map((url) => ({
@@ -158,8 +173,8 @@ export class IndexService {
     return result;
   };
 
-  private getSitemapUrl = async (siteMapUrl: string) => {
-    const sitemapXml = await fetch(siteMapUrl, {
+  private getSitemapUrl = async (sitemapUrl: string) => {
+    const sitemapXml = await fetch(sitemapUrl, {
       method: "GET",
     }).then((res) => res.text());
 

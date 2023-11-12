@@ -81,15 +81,15 @@ type BulkUrlRequest = UrlRequest[];
 ```ts
 type BulkUrlResponse = UrlResponse[];
 ```
-#### `siteMap()`
+#### `sitemap()`
 ##### Request
 ```ts
-type SiteMapRequestInput = {
-	siteMapUrl?: string;
+type SitemapRequestInput = {
+	sitemapUrl?: string;
 }
 ```
 ##### Response
 ```ts
-type SiteMapResponse = BulkUrlResponse;
+type SitemapResponse = BulkUrlResponse;
 ```
 
