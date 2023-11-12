@@ -1,5 +1,6 @@
 import { IndexService } from "../../application/service/index.service";
 import { LoginService } from "../../application/service/login.service";
+import { SearchConsoleIndexerConstructorInput } from "../../contract/init.contract";
 import { errorResolver } from "../../domain/error";
 import { GoogleIndexApiClient } from "../../infrastructure/external-api/google.index.api.client";
 import { OriginsRepo } from "../../infrastructure/repo/origins.repo";

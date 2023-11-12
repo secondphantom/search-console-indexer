@@ -5,6 +5,7 @@ dotenv.config();
 
 describe("Origins Repo", () => {
   let originsRepo: OriginsRepo;
+
   beforeAll(() => {
     originsRepo = new OriginsRepo({
       userId: process.env.USER_ID!,

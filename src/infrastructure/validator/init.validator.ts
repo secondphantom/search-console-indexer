@@ -1,6 +1,7 @@
 import { IInitValidator } from "../../controller/init/init.interface";
 import z from "zod";
 import { invalidInput } from "../../domain/error";
+import { SearchConsoleIndexerConstructorInput } from "../../contract/init.contract";
 
 export class InitValidator implements IInitValidator {
   private constructorInputSchema = z.object({

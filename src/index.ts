@@ -1,3 +1,4 @@
+import { SearchConsoleIndexerConstructorInput } from "./contract/init.contract";
 import { IndexController } from "./controller/index/index.controller";
 import { InitController } from "./controller/init/init.controller";
 import { InitValidator } from "./infrastructure/validator/init.validator";
