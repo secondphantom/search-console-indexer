@@ -28,7 +28,7 @@ export class OriginsRepo implements IOriginsRepo {
       ...this.options,
       ...options,
     };
-    this.saveData();
+    this.syncSaveData();
   }
 
   private loadData = () => {
@@ -49,23 +49,32 @@ export class OriginsRepo implements IOriginsRepo {
     const urlSet = this.getUrlSet(origin);
 
     urlSet.set(urlInfo.url, urlInfo);
-
-    this.saveData();
   };
 
-  private getUrlSet = (origin: string) => {
+  getUrlSet = (origin: string) => {
     if (!this.data.origins.has(origin)) {
       this.data.origins.set(origin, new Map());
     }
     return this.data.origins.get(origin)!;
   };
 
-  private saveData = () => {
+  private syncSaveData = () => {
     if (!this.options.saveData) return;
     const rawData = { userId: this.data.userId, origins: [] as any };
     for (const [origin, urlSet] of this.data.origins.entries()) {
       rawData.origins.push([origin, [...urlSet.entries()]]);
     }
-    fs.promises.writeFile(this.dataFilePath, JSON.stringify(rawData)).catch();
+
+    fs.writeFileSync(this.dataFilePath, JSON.stringify(rawData));
+  };
+
+  asyncSaveData = async () => {
+    if (!this.options.saveData) return;
+    const rawData = { userId: this.data.userId, origins: [] as any };
+    for (const [origin, urlSet] of this.data.origins.entries()) {
+      rawData.origins.push([origin, [...urlSet.entries()]]);
+    }
+
+    await fs.promises.writeFile(this.dataFilePath, JSON.stringify(rawData));
   };
 }
