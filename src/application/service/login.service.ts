@@ -10,6 +10,7 @@ type LoginServiceConstructorInput = {
   userRepo: IUserRepo;
   options?: {
     port?: number;
+    saveUser?: boolean;
   };
 };
 
@@ -18,6 +19,7 @@ export class LoginService {
   private httpServer: undefined | Server;
   private options = {
     port: 3000,
+    saveUser: true,
   };
   private userRepo: IUserRepo;
   private indexApiClient: IIndexApiClient;
@@ -47,7 +49,9 @@ export class LoginService {
         siteList.map((siteUrl) => new URL(siteUrl).origin)
       );
       this.userRepo.updateUser(user.getUser());
-      await this.userRepo.asyncSaveUser();
+      if (this.options.saveUser) {
+        await this.userRepo.asyncSaveUser();
+      }
       return;
     }
 
@@ -71,7 +75,9 @@ export class LoginService {
     const user = new UserDomain(this.userRepo.getUser());
     user.updateUserAuth(token);
     this.userRepo.updateUser(user.getUser());
-    await this.userRepo.asyncSaveUser();
+    if (this.options.saveUser) {
+      await this.userRepo.asyncSaveUser();
+    }
 
     console.info(`Updated User AuthData`);
   };

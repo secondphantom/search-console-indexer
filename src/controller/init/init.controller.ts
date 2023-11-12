@@ -4,7 +4,7 @@ import { GoogleIndexApiClient } from "../../infrastructure/external-api/google.i
 import { OriginsRepo } from "../../infrastructure/repo/origins.repo";
 import { UserRepo } from "../../infrastructure/repo/user.repo";
 import { IndexController } from "../index/index.controller";
-import { IndexValidator } from "../index/index.interface";
+import { IIndexValidator } from "../index/index.interface";
 import { IInitValidator } from "./init.interface";
 
 export class InitController {
@@ -42,7 +42,7 @@ export class InitController {
       userRepo,
     });
 
-    const indexValidator = {} as IndexValidator;
+    const indexValidator = {} as IIndexValidator;
 
     const indexController = new IndexController({
       indexService,
