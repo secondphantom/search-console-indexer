@@ -71,6 +71,7 @@ export class LoginService {
     const user = new UserDomain(this.userRepo.getUser());
     user.updateUserAuth(token);
     this.userRepo.updateUser(user.getUser());
+    await this.userRepo.asyncSaveUser();
 
     console.info(`Updated User AuthData`);
   };
