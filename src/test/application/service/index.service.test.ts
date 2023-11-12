@@ -19,6 +19,12 @@ describe("Index Service", () => {
     });
   });
 
+  afterEach(() => {
+    userRepo = {} as IUserRepo;
+    indexApiClient = {} as IIndexApiClient;
+    originsRepo = {} as IOriginsRepo;
+  });
+
   describe("Single Url", () => {
     describe("Fail", () => {
       test("invalid origin", async () => {
@@ -27,9 +33,12 @@ describe("Index Service", () => {
         };
         userRepo.findOrigin = jest.fn(() => false);
         originsRepo.updateUrl = jest.fn(() => undefined);
+        originsRepo.asyncSaveData = jest.fn();
         indexService["inspectUrl"] = jest.fn(() => undefined as any);
 
-        const result = await indexService.singleUrl(request);
+        const result = await indexService.singleUrl({
+          indexSingeUrlRequest: request,
+        });
 
         expect(result).toMatchObject({
           url: request.url,
@@ -43,6 +52,7 @@ describe("Index Service", () => {
 
         expect(userRepo.findOrigin).toBeCalledTimes(1);
         expect(originsRepo.updateUrl).toBeCalledTimes(1);
+        expect(originsRepo.asyncSaveData).toBeCalledTimes(1);
         expect(indexService["inspectUrl"]).toBeCalledTimes(0);
       });
 
@@ -52,12 +62,15 @@ describe("Index Service", () => {
         };
         userRepo.findOrigin = jest.fn(() => true);
         originsRepo.updateUrl = jest.fn(() => undefined);
+        originsRepo.asyncSaveData = jest.fn();
         indexApiClient.inspectUrl = jest.fn(async () => {
           throw new Error();
         });
         indexService["indexingUrl"] = jest.fn(() => undefined as any);
 
-        const result = await indexService.singleUrl(request);
+        const result = await indexService.singleUrl({
+          indexSingeUrlRequest: request,
+        });
 
         expect(result).toMatchObject({
           url: request.url,
@@ -71,6 +84,7 @@ describe("Index Service", () => {
 
         expect(userRepo.findOrigin).toBeCalledTimes(1);
         expect(originsRepo.updateUrl).toBeCalledTimes(1);
+        expect(originsRepo.asyncSaveData).toBeCalledTimes(1);
         expect(indexApiClient.inspectUrl).toBeCalledTimes(1);
         expect(indexService["indexingUrl"]).toBeCalledTimes(0);
       });
@@ -81,6 +95,7 @@ describe("Index Service", () => {
         };
         userRepo.findOrigin = jest.fn(() => true);
         originsRepo.updateUrl = jest.fn(() => undefined);
+        originsRepo.asyncSaveData = jest.fn();
         indexApiClient.inspectUrl = jest.fn(() => {
           return new Promise((res) => {
             res({ isIndexing: false, url: request.url });
@@ -90,7 +105,9 @@ describe("Index Service", () => {
           throw new Error();
         });
 
-        const result = await indexService.singleUrl(request);
+        const result = await indexService.singleUrl({
+          indexSingeUrlRequest: request,
+        });
 
         expect(result).toMatchObject({
           url: request.url,
@@ -104,6 +121,7 @@ describe("Index Service", () => {
 
         expect(userRepo.findOrigin).toBeCalledTimes(1);
         expect(originsRepo.updateUrl).toBeCalledTimes(1);
+        expect(originsRepo.asyncSaveData).toBeCalledTimes(1);
         expect(indexApiClient.inspectUrl).toBeCalledTimes(1);
         expect(indexApiClient.indexingUrl).toBeCalledTimes(1);
       });
@@ -116,6 +134,7 @@ describe("Index Service", () => {
         };
         userRepo.findOrigin = jest.fn(() => true);
         originsRepo.updateUrl = jest.fn(() => undefined);
+        originsRepo.asyncSaveData = jest.fn();
         indexApiClient.inspectUrl = jest.fn(() => {
           return new Promise((res) => {
             res({ isIndexing: true, url: request.url });
@@ -127,7 +146,9 @@ describe("Index Service", () => {
           });
         });
 
-        const result = await indexService.singleUrl(request);
+        const result = await indexService.singleUrl({
+          indexSingeUrlRequest: request,
+        });
 
         expect(result).toMatchObject({
           url: request.url,
@@ -141,6 +162,7 @@ describe("Index Service", () => {
 
         expect(userRepo.findOrigin).toBeCalledTimes(1);
         expect(originsRepo.updateUrl).toBeCalledTimes(1);
+        expect(originsRepo.asyncSaveData).toBeCalledTimes(1);
         expect(indexApiClient.inspectUrl).toBeCalledTimes(1);
         expect(indexApiClient.indexingUrl).toBeCalledTimes(1);
       });
@@ -149,6 +171,7 @@ describe("Index Service", () => {
           url: "https://example.com",
         };
         userRepo.findOrigin = jest.fn(() => true);
+        originsRepo.asyncSaveData = jest.fn();
         originsRepo.updateUrl = jest.fn(() => undefined);
         indexApiClient.inspectUrl = jest.fn(() => {
           return new Promise((res) => {
@@ -161,7 +184,9 @@ describe("Index Service", () => {
           });
         });
 
-        const result = await indexService.singleUrl(request);
+        const result = await indexService.singleUrl({
+          indexSingeUrlRequest: request,
+        });
 
         expect(result).toMatchObject({
           url: request.url,
@@ -175,6 +200,7 @@ describe("Index Service", () => {
 
         expect(userRepo.findOrigin).toBeCalledTimes(1);
         expect(originsRepo.updateUrl).toBeCalledTimes(1);
+        expect(originsRepo.asyncSaveData).toBeCalledTimes(1);
         expect(indexApiClient.inspectUrl).toBeCalledTimes(1);
         expect(indexApiClient.indexingUrl).toBeCalledTimes(0);
       });
@@ -202,15 +228,12 @@ describe("Index Service", () => {
         },
       ];
 
-      indexService.singleUrl = jest.fn(() => {
-        return new Promise((res) => {
-          res(undefined as any);
-        });
-      });
-
-      const result = indexService.bulkUrl(requests);
+      indexService.singleUrl = jest.fn();
+      originsRepo.asyncSaveData = jest.fn();
+      const result = await indexService.bulkUrl(requests);
 
       expect(indexService.singleUrl).toBeCalledTimes(requests.length);
+      expect(originsRepo.asyncSaveData).toBeCalledTimes(1);
     });
   });
 
