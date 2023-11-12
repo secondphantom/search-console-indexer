@@ -3,7 +3,7 @@ import fs from "fs";
 import {
   IndexBulkUrlRequest,
   IndexSingeUrlRequest,
-  IndexSiteMapRequest,
+  IndexSitemapRequest,
 } from "../../contract/index.contract";
 import { ServiceError, errorResolver } from "../../domain/error";
 import { UrlDomain, UrlInfo } from "../../domain/url.domain";
@@ -158,12 +158,12 @@ export class IndexService {
     return result;
   };
 
-  sitemap = async (indexSiteMapRequest: IndexSiteMapRequest) => {
+  sitemap = async (indexSiteMapRequest: IndexSitemapRequest) => {
     const ignoreIsIndexingOrNot = indexSiteMapRequest.ignoreIsIndexingOrNot
       ? indexSiteMapRequest.ignoreIsIndexingOrNot
       : false;
     const sitemapUrlList = await this.getSitemapUrl(
-      indexSiteMapRequest.siteMapUrl
+      indexSiteMapRequest.sitemapUrl
     );
 
     const bulkUrlRequest: IndexBulkUrlRequest = sitemapUrlList.map((url) => ({
@@ -175,8 +175,8 @@ export class IndexService {
     return result;
   };
 
-  private getSitemapUrl = async (siteMapUrl: string) => {
-    const sitemapXml = await fetch(siteMapUrl, {
+  private getSitemapUrl = async (sitemapUrl: string) => {
+    const sitemapXml = await fetch(sitemapUrl, {
       method: "GET",
     }).then((res) => res.text());
 

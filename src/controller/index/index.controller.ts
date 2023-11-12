@@ -2,7 +2,7 @@ import { IndexService } from "../../application/service/index.service";
 import {
   IndexBulkUrlRequest,
   IndexSingeUrlRequest,
-  IndexSiteMapRequest,
+  IndexSitemapRequest,
 } from "../../contract/index.contract";
 import { errorResolver } from "../../domain/error";
 import { IIndexValidator } from "./index.interface";
@@ -45,7 +45,7 @@ export class IndexController {
     }
   };
 
-  sitemap = async (dto: IndexSiteMapRequest) => {
+  sitemap = async (dto: IndexSitemapRequest) => {
     try {
       const validDto = this.indexValidator.sitemap(dto);
       const result = await this.indexService.sitemap(validDto);
