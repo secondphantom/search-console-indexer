@@ -1,8 +1,5 @@
 import { IndexValidator } from "../../../infrastructure/validator/index.validator";
 
-// case validate url http or https
-//
-
 describe("Index validator", () => {
   let indexValidator: IndexValidator;
 
