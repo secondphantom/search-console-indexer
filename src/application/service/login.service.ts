@@ -3,7 +3,7 @@ import { IUserRepo } from "../interfaces/user.repo.interface";
 import * as readline from "readline/promises";
 import { stdin, stdout } from "process";
 import { IIndexApiClient } from "../interfaces/index.api.client.interface";
-import { UserDomain } from "../domain/user.domain";
+import { UserDomain } from "../../domain/user.domain";
 
 type LoginServiceConstructorInput = {
   indexApiClient: IIndexApiClient;
@@ -39,12 +39,11 @@ export class LoginService {
   //@ts-ignore
   login = async () => {
     const user = new UserDomain(this.userRepo.getUser());
-
-    if (user.auth) {
-      console.info(`Success Login with email: ${user.userId}`);
-      await this.indexApiClient.init(user.auth);
+    if (user.getUserAuth()) {
+      console.info(`Success Login with email: ${user.getUserId()}`);
+      await this.indexApiClient.init(user.getUserAuth());
       const siteList = await this.indexApiClient.getSiteList();
-      user.updateUserHosts(siteList);
+      user.updateUserOrigins(siteList);
       this.userRepo.updateUser(user.getUser());
       return;
     }
@@ -68,7 +67,6 @@ export class LoginService {
     const token = await this.indexApiClient.getAuthToken(this.code);
     const user = new UserDomain(this.userRepo.getUser());
     user.updateUserAuth(token);
-    console.log(user);
     this.userRepo.updateUser(user.getUser());
 
     console.info(`Updated User AuthData`);

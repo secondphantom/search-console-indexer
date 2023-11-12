@@ -1,5 +1,5 @@
 import fs from "fs";
-import { User } from "../../application/domain/user.domain";
+import { User } from "../../domain/user.domain";
 import {
   IUserRepo,
   UserRepoConstructorInput,
@@ -13,7 +13,7 @@ export class UserRepo implements IUserRepo {
   private user: User = {
     auth: "",
     userId: "",
-    hosts: [],
+    origins: [],
   };
 
   constructor({ userId, dataDirPath, options }: UserRepoConstructorInput) {
@@ -44,8 +44,14 @@ export class UserRepo implements IUserRepo {
     this.saveUser();
   };
 
+  findOrigin = (siteUrl: string) => {
+    return this.user.origins.includes(siteUrl);
+  };
+
   private saveUser = () => {
     if (!this.options.saveUser) return;
-    fs.promises.writeFile(this.userDataFilePath, JSON.stringify(this.user));
+    fs.promises
+      .writeFile(this.userDataFilePath, JSON.stringify(this.user))
+      .catch();
   };
 }

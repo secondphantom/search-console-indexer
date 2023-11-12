@@ -1,7 +1,7 @@
 import fs from "fs";
 import dotenv from "dotenv";
 dotenv.config();
-import { GoogleIndexApiClient } from "../../../infrastructure/repo/google.index.api.client";
+import { GoogleIndexApiClient } from "../../../infrastructure/external-api/google.index.api.client";
 
 describe("Google Index Api Client", () => {
   let googleIndexApiClient: GoogleIndexApiClient;
