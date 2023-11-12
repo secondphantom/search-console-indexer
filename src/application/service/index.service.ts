@@ -1,12 +1,10 @@
-import fs from "fs";
-
 import {
   IndexBulkUrlRequest,
   IndexSingeUrlRequest,
   IndexSitemapRequest,
 } from "../../contract/index.contract";
 import { ServiceError, errorResolver } from "../../domain/error";
-import { UrlDomain, UrlInfo } from "../../domain/url.domain";
+import { UrlDomain } from "../../domain/url.domain";
 import { IIndexApiClient } from "../interfaces/index.api.client.interface";
 import { IUserRepo } from "../interfaces/user.repo.interface";
 import { IOriginsRepo } from "../interfaces/origins.repo.interface";
