@@ -32,7 +32,10 @@ export class IndexService {
     this.originsRepo = originsRepo;
   }
 
-  singleUrl = async (indexSingeUrlRequest: IndexSingeUrlRequest) => {
+  singleUrl = async (
+    indexSingeUrlRequest: IndexSingeUrlRequest,
+    saveData: boolean = true
+  ) => {
     const ignoreIsIndexingOrNot = indexSingeUrlRequest.ignoreIsIndexingOrNot
       ? indexSingeUrlRequest.ignoreIsIndexingOrNot
       : false;
@@ -63,6 +66,9 @@ export class IndexService {
     }
 
     this.originsRepo.updateUrl(urlDomain.get());
+    if (saveData) {
+      await this.originsRepo.asyncSaveData();
+    }
 
     return urlDomain.get();
   };
@@ -126,10 +132,11 @@ export class IndexService {
 
   bulkUrl = async (indexBulkUrlRequest: IndexBulkUrlRequest) => {
     const promises = indexBulkUrlRequest.map((request) =>
-      this.singleUrl(request)
+      this.singleUrl(request, false)
     );
 
     const result = await Promise.all(promises);
+    await this.originsRepo.asyncSaveData();
 
     return result;
   };

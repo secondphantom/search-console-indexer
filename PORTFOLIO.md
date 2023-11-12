@@ -4,7 +4,6 @@
 ![1699690208086](image/PORTFOLIO/1699690208086.png)
 ![1699690223541](image/PORTFOLIO/1699690223541.png)
 ## Todo
-
 - [X] 00: docs
 - [X] 01: login service
   - [X] login
@@ -17,10 +16,10 @@
         - [X] create auth client
       - [X] fail
         - [X] get auth url
-- [ ] 02: index service
+- [X] 02: index service
   - [X] index service layer
-  - [ ] single url
-    - [ ] origins repo
+  - [X] single url
+    - [X] origins repo
     - [X] index api client
       - [X] inspect url
       - [X] indexing url
