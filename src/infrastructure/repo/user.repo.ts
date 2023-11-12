@@ -19,12 +19,12 @@ export class UserRepo implements IUserRepo {
   constructor({ userId, dataDirPath, options }: UserRepoConstructorInput) {
     this.loadUser();
     this.user.userId = userId;
-    this.userDataFilePath = `${dataDirPath}/${userId}-userData.json`;
+    this.userDataFilePath = `${dataDirPath}/${userId}-user.json`;
     this.options = {
       ...this.options,
       ...options,
     };
-    this.saveUser();
+    this.syncSaveUser();
   }
 
   private loadUser = () => {
@@ -41,17 +41,22 @@ export class UserRepo implements IUserRepo {
 
   updateUser = (user: User) => {
     this.user = user;
-    this.saveUser();
   };
 
   findOrigin = (siteUrl: string) => {
     return this.user.origins.includes(siteUrl);
   };
 
-  private saveUser = () => {
+  private syncSaveUser = () => {
     if (!this.options.saveUser) return;
-    fs.promises
-      .writeFile(this.userDataFilePath, JSON.stringify(this.user))
-      .catch();
+    fs.writeFileSync(this.userDataFilePath, JSON.stringify(this.user));
+  };
+
+  asyncSaveUser = async () => {
+    if (!this.options.saveUser) return;
+    await fs.promises.writeFile(
+      this.userDataFilePath,
+      JSON.stringify(this.user)
+    );
   };
 }

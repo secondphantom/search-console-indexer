@@ -43,8 +43,11 @@ export class LoginService {
       console.info(`Success Login with email: ${user.getUserId()}`);
       await this.indexApiClient.init(user.getUserAuth());
       const siteList = await this.indexApiClient.getSiteList();
-      user.updateUserOrigins(siteList);
+      user.updateUserOrigins(
+        siteList.map((siteUrl) => new URL(siteUrl).origin)
+      );
       this.userRepo.updateUser(user.getUser());
+      await this.userRepo.asyncSaveUser();
       return;
     }
 

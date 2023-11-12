@@ -12,4 +12,5 @@ export type IUserRepo = {
   getUser: () => User;
   updateUser: (user: User) => void;
   findOrigin: (origin: string) => boolean;
+  asyncSaveUser: () => Promise<void>;
 };
