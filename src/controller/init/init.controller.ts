@@ -5,10 +5,10 @@ import { OriginsRepo } from "../../infrastructure/repo/origins.repo";
 import { UserRepo } from "../../infrastructure/repo/user.repo";
 import { IndexController } from "../index/index.controller";
 import { IndexValidator } from "../index/index.interface";
-import { InitValidator } from "./init.interface";
+import { IInitValidator } from "./init.interface";
 
 export class InitController {
-  constructor(private initValidator: InitValidator) {}
+  constructor(private initValidator: IInitValidator) {}
 
   getInstance = (constructorInput: SearchConsoleIndexerConstructorInput) => {
     const { clientSecretFilePath, dataDirPath, userId, options } =

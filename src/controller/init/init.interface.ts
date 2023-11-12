@@ -1,5 +1,5 @@
-export type InitValidator = {
-  validateConstructor: (
+export type IInitValidator = {
+  constructor: (
     constructorInput: SearchConsoleIndexerConstructorInput
   ) => SearchConsoleIndexerConstructorInput;
 };
