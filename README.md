@@ -1,4 +1,28 @@
-# Search Console Util
+# Search Console Indexer
+[PORTFOLIO](PORTFOLIO.md)
+
+## Table of Contents
+- [Search Console Indexer](#search-console-indexer)
+	- [Table of Contents](#table-of-contents)
+	- [Dependencies](#dependencies)
+	- [Installation](#installation)
+	- [Basic usage](#basic-usage)
+	- [API](#api)
+		- [Class](#class)
+		- [Class Methods](#class-methods)
+			- [`login()`](#login)
+			- [`index.singleUrl()`](#indexsingleurl)
+				- [Usage](#usage)
+				- [Request](#request)
+				- [Response](#response)
+			- [`index.bulkUrl()`](#indexbulkurl)
+				- [Usage](#usage-1)
+				- [Request](#request-1)
+				- [Response](#response-1)
+			- [`index.sitemap()`](#indexsitemap)
+				- [Usage](#usage-2)
+				- [Request](#request-2)
+				- [Response](#response-2)
 
 ## Dependencies
 - [googleapis](https://www.npmjs.com/package/googleapis)
@@ -9,22 +33,17 @@
 ```
 npm install https://github.com/secondphantom/search-console-indexer
 ```
-
 ## Basic usage
 ```ts
 	const indexer = new SearchConsoleIndexer({
 		userId:"userId",
 		clientSecretFilePath: "./client_secret.json",
 		dataDirPath: "./",
-		options: {
-			saveUser: true,
-			saveData: true,
-		}
 	});
 
 	await indexer.login();
 
-	const response = await indexer.url({
+	const response = await indexer.index.singleUrl({
 		url: "https://example.com/example-docs"
 	});
 ```
@@ -33,63 +52,85 @@ npm install https://github.com/secondphantom/search-console-indexer
 ### Class
 ```ts
 type SearchConsoleIndexerConstructorInput = {
-	userId: string;
-	clientSecretFilePath: string;
-	dataDirPath: string;
-	options?: {
-		//default true
-		saveUser?: boolean;
-		//default true
-		saveData?: boolean;
-		//default 3005
-		port?: boolean;
-	}
+  userId: string;
+  clientSecretFilePath: string;
+  dataDirPath: string;
+  options?: {
+    //default true
+    saveUser?: boolean;
+    //default true
+    saveData?: boolean;
+    //default 3005
+    port?: number;
+  };
 };
-const indexer = new SearchConsoleIndexer(input:SearchConsoleUtilConstructorInput);
+
+const indexer = new SearchConsoleIndexer(input:SearchConsoleIndexerConstructorInput);
 ```
-### `login()`
+### Class Methods
+#### `login()`
+If OAuth token is not existed, Console show Url for OAuth
 ```ts
 await indexer.login();
 ```
-### indexing
-#### `url()`
+#### `index.singleUrl()`
+##### Usage
+```ts
+await indexer.index.singleUrl(
+	{url:"https://example.com/1"}
+)
+```
 ##### Request
 ```ts
-type UrlRequest = {
-	//example: "https://example.com/example-docs"
-	url: string
-}
+export type IndexSingeUrlRequest = {
+  url: string;
+  ignoreIsIndexingOrNot?: boolean;
+};
 ```
 ##### Response
 ```ts
-type UrlResponse = {
-	url: string;
-	requestedDate: string;
-	isIndexing: boolean;
-	request: {
-		success: boolean;
-		message: string;
-	}
-}
+type IndexSingeUrlResponse = {
+  url: string;
+  requestedDate: string;
+  isIndexing: boolean;
+  request: {
+    success: boolean;
+    message: string;
+  };
+};
 ```
-#### `bulkUrl()`
+#### `index.bulkUrl()`
+##### Usage
+```ts
+await indexer.index.bulkUrl([
+	{url:"https://example.com/1"},
+	{url:"https://example.com/2"}
+])
+```
 ##### Request
 ```ts
-type BulkUrlRequest = UrlRequest[];
+type IndexBulkUrlRequest = IndexSingeUrlRequest[];
 ```
 ##### Response
 ```ts
-type BulkUrlResponse = UrlResponse[];
+type IndexBulkRulResponse = IndexSingeUrlResponse[];
 ```
-#### `sitemap()`
+#### `index.sitemap()`
+##### Usage
+```ts
+await indexer.index.sitemap(
+	{sitemapUrl:"https://example.com/sitemap.xml"}
+)
+```
 ##### Request
 ```ts
-type SitemapRequestInput = {
-	sitemapUrl?: string;
-}
+type IndexSitemapRequest = {
+  sitemapUrl: string;
+  ignoreIsIndexingOrNot?: boolean;
+};
 ```
 ##### Response
 ```ts
-type SitemapResponse = BulkUrlResponse;
+type IndexSitemapResponse = IndexSingeUrlResponse[];
 ```
 

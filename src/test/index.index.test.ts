@@ -4,13 +4,13 @@ dotenv.config();
 
 describe("Module Index", () => {
   let indexer: SearchConsoleIndexer;
-  beforeAll(() => {
+  beforeAll(async () => {
     indexer = new SearchConsoleIndexer({
       userId: process.env.USER_ID!,
       dataDirPath: process.env.DATA_DIR_PATH!,
       clientSecretFilePath: process.env.CLIENT_SECRET_FILE_PATH!,
     });
-    indexer.login();
+    await indexer.login();
   });
 
   test("Single Url", async () => {
