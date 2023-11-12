@@ -4,7 +4,7 @@ import { InitController } from "./controller/init/init.controller";
 import { InitValidator } from "./infrastructure/validator/init.validator";
 
 export class SearchConsoleIndexer {
-  login: () => any;
+  login: () => void;
   index: IndexController;
 
   constructor(constructorInput: SearchConsoleIndexerConstructorInput) {
